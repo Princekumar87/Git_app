@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Github App</title>
+</head>
+<body>
+  <input type="text" id="searchInput" placeholder="Search repository">
+  <button onclick="searchRepositories()">Search</button>
+
+  <div id="repositoriesList"></div>
+
+  <script>
+    async function searchRepositories() {
+      const query = document.getElementById('searchInput').value;
+      const response = await fetch(`/search-repos/${query}`);
+      const data = await response.json();
+      displayRepositories(data);
+    }
+
+    async function fetchStoredRepositories() {
+      const response = await fetch('/stored-repos');
+      const data = await response.json();
+      displayRepositories(data);
+    }
+
+    function displayRepositories(repositories) {
+      const repositoriesList = document.getElementById('repositoriesList');
+      repositoriesList.innerHTML = '';
+
+      repositories.forEach(repo => {
+        const repoElement = document.createElement('div');
+        repoElement.textContent = `${repo.name}: ${repo.url}`;
+        repositoriesList.appendChild(repoElement);
+      });
+    }
+
+    fetchStoredRepositories(); // Fetch stored repositories when the page loads
+  </script>
+</body>
+</html>
